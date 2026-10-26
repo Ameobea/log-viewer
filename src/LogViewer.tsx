@@ -66,7 +66,7 @@ export function App() {
 
   return (
     <div style={{ padding: 20 }}>
-      <List data={data} pageIx={0} onDelete={handleDelete} search='' />
+      <List data={data} pageIx={0} onDelete={handleDelete}  />
     </div>
   )
 }
