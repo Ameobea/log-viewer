@@ -9,10 +9,9 @@ interface Item {
 
 interface FancyDataCellProps {
   data: { text: string; id: string; i: number }
-  onDelete: () => void
 }
 
-const FancyDataCell: React.FC<FancyDataCellProps> = ({ data: { text, i }, onDelete }) => {
+const FancyDataCell: React.FC<FancyDataCellProps> = ({ data: { text, i } }) => {
   const [expanded, setExpanded] = useState(false)
 
   const start = performance.now()
@@ -23,7 +22,7 @@ const FancyDataCell: React.FC<FancyDataCellProps> = ({ data: { text, i }, onDele
       <span onClick={() => setExpanded(!expanded)} style={{ cursor: 'pointer', marginRight: 8 }}>
         {expanded ? '▼' : '▶'}
       </span>
-      {i}: {text} <button onClick={onDelete}>Delete</button>
+      {i}: {text}
       {expanded && <div style={{ fontSize: '0.85em', color: '#666' }}>Details for {text}</div>}
     </li>
   )
@@ -33,29 +32,19 @@ interface ListProps {
   data: Item[]
   search?: string
   pageIx: number
-  onDelete: (itemID: string) => void
 }
 
-const List: React.FC<ListProps> = ({ data, search, pageIx, onDelete }) => {
-  const [deletedSessionCount, setDeletedSessionCount] = useState(0)
-
-  const handleDelete = (id: string) => {
-    onDelete(id)
-    setDeletedSessionCount(deletedSessionCount + 1)
-  }
-
+const List: React.FC<ListProps> = ({ data, search, pageIx }) => {
   const visibleItems = data.filter((d) => d.text.includes(search))
   const pageItems = visibleItems.slice(PAGE_SIZE * pageIx, PAGE_SIZE * (pageIx + 1))
 
   return (
     <div>
-      <p>Items deleted this session: {deletedSessionCount}</p>
       <ul>
         {pageItems.map((item, index) => (
           <FancyDataCell
             data={{ ...item, i: PAGE_SIZE * pageIx + index }}
             key={index}
-            onDelete={() => handleDelete(item.id)}
           />
         ))}
       </ul>
@@ -77,7 +66,7 @@ export function App() {
 
   return (
     <div style={{ padding: 20 }}>
-      <List data={data} pageIx={0} onDelete={handleDelete} />
+      <List data={data} pageIx={0} onDelete={handleDelete} search='' />
     </div>
   )
 }
